@@ -1,8 +1,10 @@
 package com.pindad.aftersalespindadmekanik;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.FragmentManager;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -12,9 +14,19 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.FrameLayout;
+
+import com.pindad.aftersalespindadmekanik.Fragment.LoginFragment;
+
+import static android.view.View.GONE;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
+    public FragmentManager fragmentManager;
+    public Toolbar toolbar;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,13 +34,20 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        fragmentManager = getSupportFragmentManager();
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                SaveSharedPreference.deletePreference(MainActivity.this);
+                Intent intent = getIntent();
+                overridePendingTransition(0, 0);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                finish();
+                overridePendingTransition(0, 0);
+                startActivity(intent);
+
             }
         });
 
@@ -40,6 +59,46 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        try{
+            if(SaveSharedPreference.getUserName(MainActivity.this).length() == 0)
+            {
+                // call Login Activity
+            }
+            signIn();
+        }catch (NullPointerException e){
+            LoginFragment loginFragment = new LoginFragment();
+            fragmentManager.beginTransaction()
+                    .add(R.id.loginContainer, loginFragment)
+                    .commit();
+        }// Check if user is signed in (non-null) and update UI accordingly.
+    }
+
+
+    public void signIn() {
+        FrameLayout loginContainer = (FrameLayout) findViewById(R.id.loginContainer);
+        loginContainer.setVisibility(GONE);
+        toolbar.setVisibility(View.GONE);
+//        CatalogueFragment catalogueFragment = new CatalogueFragment();
+//        fragmentManager.beginTransaction()
+//                .replace(R.id.catalogueContainer, catalogueFragment)
+//                .commit();
+    }
+
+    private void updateUI() {
+        if (true) {
+            FrameLayout loginContainer = (FrameLayout) findViewById(R.id.loginContainer);
+            loginContainer.setVisibility(GONE);
+        }else{
+            LoginFragment loginFragment = new LoginFragment();
+            fragmentManager.beginTransaction()
+                    .add(R.id.loginContainer, loginFragment)
+                    .commit();
+        }
     }
 
     @Override
@@ -92,10 +151,12 @@ public class MainActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_send) {
 
+
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
 }

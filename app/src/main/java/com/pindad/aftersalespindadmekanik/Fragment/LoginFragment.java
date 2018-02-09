@@ -12,22 +12,23 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.pindad.aftersalespindadmekanik.MainActivity;
+import com.pindad.aftersalespindadmekanik.Modul.Users;
 import com.pindad.aftersalespindadmekanik.R;
+import com.pindad.aftersalespindadmekanik.RestAPI.ApiClient;
+import com.pindad.aftersalespindadmekanik.RestAPI.ApiInterface;
+import com.pindad.aftersalespindadmekanik.SaveSharedPreference;
 
 import java.util.List;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link LoginFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link LoginFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class LoginFragment extends Fragment {
     ApiInterface mApiInterface;
     private EditText username, password;
-    List<Customer> KontakList;
+    List<Users> KontakList;
 
     public LoginFragment() {
 
@@ -50,14 +51,14 @@ public class LoginFragment extends Fragment {
     }
 
     public void refresh() {
-        Call<List<Customer>> kontakCall = mApiInterface.putLogin(username.getText().toString(), password.getText().toString());
+        Call<List<Users>> kontakCall = mApiInterface.putLogin(username.getText().toString(), password.getText().toString());
         kontakCall.enqueue(new Callback<List<Users>>() {
             @Override
-            public void onResponse(Call<List<Customer>> call, Response<List<Customer>> response) {
+            public void onResponse(Call<List<Users>> call, Response<List<Users>> response) {
                 KontakList = response.body();
                 try {
                     SaveSharedPreference.setUserName(getActivity(), username.getText().toString(), KontakList.get(0).getId_customer());
-                    MenuActivity activity = (MenuActivity) getActivity();
+                    MainActivity activity = (MainActivity) getActivity();
                     activity.signIn();
                 } catch (Exception e) {
 
@@ -65,7 +66,7 @@ public class LoginFragment extends Fragment {
             }
 
             @Override
-            public void onFailure(Call<List<Customer>> call, Throwable t) {
+            public void onFailure(Call<List<Users>> call, Throwable t) {
                 Toast.makeText(getActivity(), t.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
