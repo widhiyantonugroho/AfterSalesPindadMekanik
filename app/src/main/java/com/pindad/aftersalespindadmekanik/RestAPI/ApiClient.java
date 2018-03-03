@@ -10,6 +10,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class ApiClient {
 
     public static final String BASE_URL = "http://api.pindad.com/as/";
+//    public static final String BASE_URL = "http://api.androidhive.info/json/";
 
     private static Retrofit retrofit = null;
     public static Retrofit getClient() {

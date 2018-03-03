@@ -1,4 +1,4 @@
-package com.pindad.aftersalespindadmekanik.Modul;
+package com.pindad.aftersalespindadmekanik.Model;
 
 import com.google.gson.annotations.SerializedName;
 

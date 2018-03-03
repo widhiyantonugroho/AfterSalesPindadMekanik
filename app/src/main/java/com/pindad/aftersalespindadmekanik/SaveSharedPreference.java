@@ -24,7 +24,7 @@ public class SaveSharedPreference {
         editor.putString(ID_CUSTOMER, idCustomer);
         editor.commit();
     }
-    public static void deletePreference(MainActivity ctx){
+    public static void deletePreference(Context ctx){
         getSharedPreferences(ctx).edit().clear().commit();
     }
     public static String getUserName(Context ctx)

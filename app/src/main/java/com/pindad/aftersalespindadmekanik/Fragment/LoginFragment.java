@@ -1,7 +1,5 @@
 package com.pindad.aftersalespindadmekanik.Fragment;
 
-import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -13,7 +11,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.pindad.aftersalespindadmekanik.MainActivity;
-import com.pindad.aftersalespindadmekanik.Modul.Users;
+import com.pindad.aftersalespindadmekanik.Model.Users;
 import com.pindad.aftersalespindadmekanik.R;
 import com.pindad.aftersalespindadmekanik.RestAPI.ApiClient;
 import com.pindad.aftersalespindadmekanik.RestAPI.ApiInterface;

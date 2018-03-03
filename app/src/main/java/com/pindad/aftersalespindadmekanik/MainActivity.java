@@ -1,5 +1,6 @@
 package com.pindad.aftersalespindadmekanik;
 
+import android.content.BroadcastReceiver;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -14,51 +15,63 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.Window;
+import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.TextView;
 
 import com.pindad.aftersalespindadmekanik.Fragment.LoginFragment;
 
 import static android.view.View.GONE;
 
-public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends AppCompatActivity {
 
+    private static final String TAG = MainActivity.class.getSimpleName();
+    private BroadcastReceiver mRegistrationBroadcastReceiver;
+    private TextView txtRegId, txtMessage;
     public FragmentManager fragmentManager;
     public Toolbar toolbar;
-
-
+    Button btnLogout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+
+//        txtRegId = (TextView) findViewById(R.id.txt_reg_id);
+//        txtMessage = (TextView) findViewById(R.id.txt_push_message);
+//        Button btnNext = (Button) findViewById(R.id.BtnNext);
+//        btnNext.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Intent i =  new Intent (MainActivity.this, EmailListActivity.class);
+//                startActivity(i);
+//            }
+//        });
+
         fragmentManager = getSupportFragmentManager();
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                SaveSharedPreference.deletePreference(MainActivity.this);
-                Intent intent = getIntent();
-                overridePendingTransition(0, 0);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                finish();
-                overridePendingTransition(0, 0);
-                startActivity(intent);
-
-            }
-        });
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
-        toggle.syncState();
-
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
+//        mRegistrationBroadcastReceiver = new BroadcastReceiver() {
+//            @Override
+//            public void onReceive(Context context, Intent intent) {
+//
+//                // checking for type intent filter
+//                if (intent.getAction().equals(Config.REGISTRATION_COMPLETE)) {
+//                    // gcm successfully registered
+//                    // now subscribe to `global` topic to receive app wide notifications
+//                    FirebaseMessaging.getInstance().subscribeToTopic(Config.TOPIC_GLOBAL);
+//
+//                } else if (intent.getAction().equals(Config.PUSH_NOTIFICATION)) {
+//                    // new push notification is received
+//
+//                    String message = intent.getStringExtra("message");
+//
+//                    Toast.makeText(getApplicationContext(), "Push notification: " + message, Toast.LENGTH_LONG).show();
+//
+//                    txtMessage.setText(message);
+//                }
+//            }
+//        };
     }
 
     @Override
@@ -80,9 +93,11 @@ public class MainActivity extends AppCompatActivity
 
 
     public void signIn() {
-        FrameLayout loginContainer = (FrameLayout) findViewById(R.id.loginContainer);
-        loginContainer.setVisibility(GONE);
-        toolbar.setVisibility(View.GONE);
+//        FrameLayout loginContainer = (FrameLayout) findViewById(R.id.loginContainer);
+//        loginContainer.setVisibility(GONE);
+//        toolbar.setVisibility(View.GONE);
+        Intent intent = new Intent(MainActivity.this,EmailListActivity.class);
+        startActivity(intent);
 //        CatalogueFragment catalogueFragment = new CatalogueFragment();
 //        fragmentManager.beginTransaction()
 //                .replace(R.id.catalogueContainer, catalogueFragment)
@@ -91,8 +106,10 @@ public class MainActivity extends AppCompatActivity
 
     private void updateUI() {
         if (true) {
-            FrameLayout loginContainer = (FrameLayout) findViewById(R.id.loginContainer);
-            loginContainer.setVisibility(GONE);
+//            FrameLayout loginContainer = (FrameLayout) findViewById(R.id.loginContainer);
+//            loginContainer.setVisibility(GONE);
+            Intent intent = new Intent(MainActivity.this,EmailListActivity.class);
+            startActivity(intent);
         }else{
             LoginFragment loginFragment = new LoginFragment();
             fragmentManager.beginTransaction()
@@ -102,61 +119,25 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
-        }
+    protected void onResume() {
+        super.onResume();
+
+        // register GCM registration complete receiver
+//        LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,
+//                new IntentFilter(Config.REGISTRATION_COMPLETE));
+
+        // register new push message receiver
+        // by doing this, the activity will be notified each time a new message arrives
+//        LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,
+//                new IntentFilter(Config.PUSH_NOTIFICATION));
+
+        // clear the notification area when the app is opened
+//        NotificationUtils.clearNotifications(getApplicationContext());
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
+    protected void onPause() {
+//        LocalBroadcastManager.getInstance(this).unregisterReceiver(mRegistrationBroadcastReceiver);
+        super.onPause();
     }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    @SuppressWarnings("StatementWithEmptyBody")
-    @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
-        int id = item.getItemId();
-
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
-
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_manage) {
-
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
-
-        }
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
-        return true;
-    }
-
 }

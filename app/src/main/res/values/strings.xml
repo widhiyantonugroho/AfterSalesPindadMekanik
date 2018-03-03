@@ -1,12 +1,16 @@
 <resources>
-    <string name="app_name">AfterSalesPindadMekanik</string>
-
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
-
-    <string name="action_settings">Settings</string>
+    <string name="app_name">After Sales Pindad Mekanik</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="title_login">Login Mekanik After Sales Pindad</string>
+    <string name="title_login">Login Admin After Sales Pindad</string>
+    <string name="title_activity_list_email">Email Mekanik</string>
+    <string name="action_settings">LogOut</string>
+    <string name="action_search">Search</string>
+    <string name="action_delete">Delete</string>
+    <string name="section_format">Hello World from section: %1$d</string>
+    <string name="title_activity_email">EmailActivity</string>
+    <string name="tab_text_1">INBOX</string>
+    <string name="tab_text_2">OUTBOX</string>
+    <string name="title_activity_email_list">EmailListActivity</string>
 </resources>

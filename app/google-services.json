@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "694367887354",
+    "firebase_url": "https://aftersalespindad-mekanik.firebaseio.com",
+    "project_id": "aftersalespindad-mekanik",
+    "storage_bucket": "aftersalespindad-mekanik.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:694367887354:android:f14ac93892d18526",
+        "android_client_info": {
+          "package_name": "com.pindad.aftersalespindadmekanik"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "694367887354-44ic0uf04p458qumfp05jg00b7gcpl7d.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.pindad.aftersalespindadmekanik",
+            "certificate_hash": "1e365a0ea0ec240ec1b81d5acc0830bb67cc3d8b"
+          }
+        },
+        {
+          "client_id": "694367887354-tmbqsomttcu0n0v23oi7fdpo4ap9ol08.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBsN2xF_SbDBdkGQsohdex_ayoxr0adwY0"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "694367887354-tmbqsomttcu0n0v23oi7fdpo4ap9ol08.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
