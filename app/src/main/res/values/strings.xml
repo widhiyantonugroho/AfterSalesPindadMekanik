@@ -3,7 +3,7 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="title_login">Login Admin After Sales Pindad</string>
+    <string name="title_login">Login Admin</string>
     <string name="title_activity_list_email">Email Mekanik</string>
     <string name="action_settings">LogOut</string>
     <string name="action_search">Search</string>

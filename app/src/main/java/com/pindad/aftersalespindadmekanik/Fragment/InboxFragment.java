@@ -1,11 +1,15 @@
 package com.pindad.aftersalespindadmekanik.Fragment;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.view.ActionMode;
@@ -20,10 +24,13 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.pindad.aftersalespindadmekanik.Adapter.MessagesAdapter;
+import com.pindad.aftersalespindadmekanik.Config;
 import com.pindad.aftersalespindadmekanik.EmailListActivity;
 import com.pindad.aftersalespindadmekanik.Helper.DividerItemDecoration;
 import com.pindad.aftersalespindadmekanik.Model.Message;
+import com.pindad.aftersalespindadmekanik.NotificationUtils;
 import com.pindad.aftersalespindadmekanik.R;
 import com.pindad.aftersalespindadmekanik.RestAPI.ApiClient;
 import com.pindad.aftersalespindadmekanik.RestAPI.ApiInterface;
@@ -38,13 +45,14 @@ import retrofit2.Response;
 public class InboxFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener, MessagesAdapter.MessageAdapterListener {
 
     public View empty;
-    public TextView emptyTextView;
+    public TextView emptyTextView, txtMessage, txtRegId;
 
     private List<Message> messages = new ArrayList<>();
     private RecyclerView recyclerView;
     private MessagesAdapter mAdapter;
     private SwipeRefreshLayout swipeRefreshLayout;
     private EmailListActivity.ActionModeCallback actionModeCallback;
+    private BroadcastReceiver mRegistrationBroadcastReceiver;
     //    private ActionModeCallback actionModeCallback = new ActionModeCallback();
     private ActionMode actionMode;
 
@@ -59,6 +67,8 @@ public class InboxFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         View rootView = inflater.inflate(R.layout.fragment_inbox, container, false);
         initilizeView(rootView);
 
+        txtRegId = (TextView) rootView.findViewById(R.id.txt_reg_id);
+        txtMessage = (TextView) rootView.findViewById(R.id.txt_push_message);
         recyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view);
         swipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe_refresh_layout);
         swipeRefreshLayout.setOnRefreshListener(this);
@@ -72,15 +82,35 @@ public class InboxFragment extends Fragment implements SwipeRefreshLayout.OnRefr
 
         actionModeCallback = new EmailListActivity.ActionModeCallback();
 
-        // show loader and fetch messages
-        swipeRefreshLayout.post(
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        getInbox();
-                    }
+        mRegistrationBroadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+
+                // checking for type intent filter
+                if (intent.getAction().equals(Config.REGISTRATION_COMPLETE)) {
+                    // gcm successfully registered
+                    // now subscribe to `global` topic to receive app wide notifications
+                    FirebaseMessaging.getInstance().subscribeToTopic(Config.TOPIC_GLOBAL);
+
+                } else if (intent.getAction().equals(Config.PUSH_NOTIFICATION)) {
+                    // new push notification is received
+                    String message = intent.getStringExtra("message");
+                    Toast.makeText(getContext(), "Push notification: " + message, Toast.LENGTH_LONG).show();
+                    txtMessage.setText(message);
                 }
-        );
+            }
+        };
+
+
+        // show loader and fetch messages
+//        swipeRefreshLayout.post(
+//                new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        getInbox();
+//                    }
+//                }
+//        );
 
         return rootView;
     }
@@ -90,41 +120,41 @@ public class InboxFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         emptyTextView = (TextView) rootView.findViewById(R.id.empty_view);
     }
 
-    private void getInbox() {
-        swipeRefreshLayout.setRefreshing(true);
-
-        ApiInterface apiService =
-                ApiClient.getClient().create(ApiInterface.class);
-
-        Call<List<Message>> call = apiService.getInbox();
-        call.enqueue(new Callback<List<Message>>() {
-            @Override
-            public void onResponse(Call<List<Message>> call, Response<List<Message>> response) {
-                // clear the inbox
-                messages.clear();
-
-                // add all the messages
-                // messages.addAll(response.body());
-
-                // TODO - avoid looping
-                // the loop was performed to add colors to each message
-                for (Message message : response.body()) {
-                    // generate a random color
-                    message.setColor(getRandomMaterialColor("400"));
-                    messages.add(message);
-                }
-
-                mAdapter.notifyDataSetChanged();
-                swipeRefreshLayout.setRefreshing(false);
-            }
-
-            @Override
-            public void onFailure(Call<List<Message>> call, Throwable t) {
-                Toast.makeText(getContext(), "Unable to fetch json: " + t.getMessage(), Toast.LENGTH_LONG).show();
-                swipeRefreshLayout.setRefreshing(false);
-            }
-        });
-    }
+//    private void getInbox() {
+//        swipeRefreshLayout.setRefreshing(true);
+//
+//        ApiInterface apiService =
+//                ApiClient.getClient().create(ApiInterface.class);
+//
+//        Call<List<Message>> call = apiService.getInbox();
+//        call.enqueue(new Callback<List<Message>>() {
+//            @Override
+//            public void onResponse(Call<List<Message>> call, Response<List<Message>> response) {
+//                // clear the inbox
+//                messages.clear();
+//
+//                // add all the messages
+//                // messages.addAll(response.body());
+//
+//                // TODO - avoid looping
+//                // the loop was performed to add colors to each message
+//                for (Message message : response.body()) {
+//                    // generate a random color
+//                    message.setColor(getRandomMaterialColor("400"));
+//                    messages.add(message);
+//                }
+//
+//                mAdapter.notifyDataSetChanged();
+//                swipeRefreshLayout.setRefreshing(false);
+//            }
+//
+//            @Override
+//            public void onFailure(Call<List<Message>> call, Throwable t) {
+//                Toast.makeText(getContext(), "Unable to fetch json: " + t.getMessage(), Toast.LENGTH_LONG).show();
+//                swipeRefreshLayout.setRefreshing(false);
+//            }
+//        });
+//    }
 
     /**
      * chooses a random color from array.xml
@@ -142,11 +172,33 @@ public class InboxFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         return returnColor;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        // register GCM registration complete receiver
+        LocalBroadcastManager.getInstance(getContext()).registerReceiver(mRegistrationBroadcastReceiver,
+                new IntentFilter(Config.REGISTRATION_COMPLETE));
+
+        // register new push message receiver
+        // by doing this, the activity will be notified each time a new message arrives
+        LocalBroadcastManager.getInstance(getContext()).registerReceiver(mRegistrationBroadcastReceiver,
+                new IntentFilter(Config.PUSH_NOTIFICATION));
+
+        // clear the notification area when the app is opened
+        NotificationUtils.clearNotifications(getContext());
+    }
+
+    @Override
+    public void onPause() {
+        LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(mRegistrationBroadcastReceiver);
+        super.onPause();
+    }
 
     @Override
     public void onRefresh() {
         // swipe refresh is performed, fetch the messages again
-        getInbox();
+//        getInbox();
     }
 
 
@@ -188,7 +240,9 @@ public class InboxFragment extends Fragment implements SwipeRefreshLayout.OnRefr
             messages.set(position, message);
             mAdapter.notifyDataSetChanged();
 
-            Toast.makeText(getContext(), "Read: " + message.getMessage(), Toast.LENGTH_SHORT).show();
+//            Toast.makeText(getContext(), "Read: " + message.getMessage(), Toast.LENGTH_SHORT).show();
+//            Intent i = new Intent(getActivity(), ViewEmailActivity.class);
+//            startActivity(i);
         }
     }
 

@@ -70,14 +70,14 @@ public class OutboxFragment extends Fragment implements SwipeRefreshLayout.OnRef
         actionModeCallback = new EmailListActivity.ActionModeCallback();
 
         // show loader and fetch messages
-        swipeRefreshLayout.post(
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        getInbox();
-                    }
-                }
-        );
+//        swipeRefreshLayout.post(
+//                new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        getInbox();
+//                    }
+//                }
+//        );
 
         return rootView;
     }
@@ -87,41 +87,41 @@ public class OutboxFragment extends Fragment implements SwipeRefreshLayout.OnRef
         emptyTextView = (TextView) rootView.findViewById(R.id.empty_view);
     }
 
-    private void getInbox() {
-        swipeRefreshLayout.setRefreshing(true);
-
-        ApiInterface apiService =
-                ApiClient.getClient().create(ApiInterface.class);
-
-        Call<List<Message>> call = apiService.getInbox();
-        call.enqueue(new Callback<List<Message>>() {
-            @Override
-            public void onResponse(Call<List<Message>> call, Response<List<Message>> response) {
-                // clear the inbox
-                messages.clear();
-
-                // add all the messages
-                // messages.addAll(response.body());
-
-                // TODO - avoid looping
-                // the loop was performed to add colors to each message
-                for (Message message : response.body()) {
-                    // generate a random color
-                    message.setColor(getRandomMaterialColor("400"));
-                    messages.add(message);
-                }
-
-                mAdapter.notifyDataSetChanged();
-                swipeRefreshLayout.setRefreshing(false);
-            }
-
-            @Override
-            public void onFailure(Call<List<Message>> call, Throwable t) {
-                Toast.makeText(getContext(), "Unable to fetch json: " + t.getMessage(), Toast.LENGTH_LONG).show();
-                swipeRefreshLayout.setRefreshing(false);
-            }
-        });
-    }
+//    private void getInbox() {
+//        swipeRefreshLayout.setRefreshing(true);
+//
+//        ApiInterface apiService =
+//                ApiClient.getClient().create(ApiInterface.class);
+//
+//        Call<List<Message>> call = apiService.getInbox();
+//        call.enqueue(new Callback<List<Message>>() {
+//            @Override
+//            public void onResponse(Call<List<Message>> call, Response<List<Message>> response) {
+//                // clear the inbox
+//                messages.clear();
+//
+//                // add all the messages
+//                // messages.addAll(response.body());
+//
+//                // TODO - avoid looping
+//                // the loop was performed to add colors to each message
+//                for (Message message : response.body()) {
+//                    // generate a random color
+//                    message.setColor(getRandomMaterialColor("400"));
+//                    messages.add(message);
+//                }
+//
+//                mAdapter.notifyDataSetChanged();
+//                swipeRefreshLayout.setRefreshing(false);
+//            }
+//
+//            @Override
+//            public void onFailure(Call<List<Message>> call, Throwable t) {
+//                Toast.makeText(getContext(), "Unable to fetch json: " + t.getMessage(), Toast.LENGTH_LONG).show();
+//                swipeRefreshLayout.setRefreshing(false);
+//            }
+//        });
+//    }
 
     /**
      * chooses a random color from array.xml
@@ -143,7 +143,7 @@ public class OutboxFragment extends Fragment implements SwipeRefreshLayout.OnRef
     @Override
     public void onRefresh() {
         // swipe refresh is performed, fetch the messages again
-        getInbox();
+//        getInbox();
     }
 
 
